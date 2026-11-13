@@ -109,3 +109,33 @@ em{font-family:var(--serif);font-weight:400}
 @media(max-width:860px){.header-inner{flex-wrap:wrap;padding-block:10px}.header-contact{display:none}.nav{order:3;width:100%;flex-wrap:wrap;border-radius:15px}.nav.enhanced:not(.open){display:none}.menu{display:inline-flex}}
 @media(max-width:640px){.shell{width:calc(100% - 2rem)}.hero-grid,.about,.project-grid,.featured .card-link,.skill-grid,.timeline article{grid-template-columns:1fr}.hero-grid{padding-block:50px;gap:30px}.portrait{width:min(100%,350px)}.about{gap:0}.timeline article{gap:6px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.apple-case .case-metrics > div:hover > dd {
+  color: #ff8b9b;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .apple-case .case-metrics > div > dd {
+    transform-origin: left center;
+    transition: transform 280ms cubic-bezier(.2, 1.6, .4, 1);
+  }
+
+  .apple-case .case-metrics > div:hover > dd,
+.project-card.featured .metrics > div:hover > dd {
+  color: #ff8b9b;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .apple-case .case-metrics > div > dd,
+  .project-card.featured .metrics > div > dd {
+    transform-origin: left center;
+    transition: scale 260ms cubic-bezier(.2, 1.6, .4, 1),
+      translate 260ms cubic-bezier(.2, 1.6, .4, 1);
+  }
+
+  .apple-case .case-metrics > div:hover > dd,
+  .project-card.featured .metrics > div:hover > dd {
+    scale: 1.2;
+    translate: 0 -5px;
+  }
+}
+}
