@@ -1,0 +1,89 @@
+---
+import { getCollection } from 'astro:content';
+import Site from '../layouts/Site.astro';
+import ProjectVisual from '../components/ProjectVisual.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const skillStrip = [
+  'Power BI', 'SQL', 'Python', 'Advanced Excel', 'DAX', 'Power Query',
+  'Data Modelling', 'Dashboard Design', 'Data Storytelling', 'KPI Reporting',
+  'Business Analysis', 'Requirements Gathering', 'Process Mapping', 'UAT',
+];
+const skills = [
+  ['Analysis & reporting', 'Power BI', 'Power Query', 'Advanced Excel', 'KPI reporting'],
+  ['Data & development', 'SQL', 'MySQL', 'Python', 'Pandas', 'FastAPI'],
+  ['Business analysis', 'Requirements gathering', 'Process mapping', 'UAT', 'Stakeholder reporting'],
+];
+const experience = [
+  ['Jun 2025 – Present', 'Business Analyst & IT Trainer', 'Leaders Training Centre', 'Translate stakeholder requirements into web and reporting improvements, deliver KPI reporting, and teach practical IT skills.'],
+  ['Nov 2022 – Jan 2023', 'Data Analyst', 'Hamad International Airport', 'Reconciled passenger records and validated shift logs and crew schedules for terminal operations.'],
+  ['Oct 2020 – Apr 2021', 'Data Analyst', 'Qatar Online', 'Analysed e-commerce activity and built SQL and Excel reports for conversion, retention, and inventory turnover.'],
+];
+---
+<Site title="Aleshba Riaz Ali | Analytics Portfolio" description="Business analytics, business intelligence, and IT training portfolio of Aleshba Riaz Ali.">
+  <section class="hero grid-backdrop" id="home">
+    <div class="shell hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow badge"><i></i> Based in Doha, Qatar</span>
+        <p class="intro">Hi, I’m</p>
+        <h1>Aleshba <span class="hero-surname">Riaz Ali</span></h1>
+        <p class="hero-description">I build dashboards and reports that help teams <em>make sense of their data.</em></p>
+        <p class="hero-tools">Business Analytics · Business Intelligence · IT Trainer</p>
+        <div class="actions"><a class="button primary" href="#projects">See my work <span aria-hidden="true">↘</span></a><a class="button" href="#contact">Get in touch</a></div>
+      </div>
+      <figure class="portrait">
+        <img src={base + 'images/portrait.webp'} alt="Aleshba Riaz Ali in a black blazer" width="800" height="1000" fetchpriority="high" />
+        <figcaption><span>LOCATION</span>Doha, Qatar</figcaption>
+      </figure>
+    </div>
+  </section>
+  <div class="tool-strip">
+    <ul class="shell" aria-label="Tools and skills">
+      {skillStrip.map(skill => <li>{skill}</li>)}
+    </ul>
+  </div>
+  <section class="shell section about" id="about">
+    <p class="eyebrow">About</p>
+    <div><h2>Analytics, web development <em>& IT training.</em></h2><p>I work with business teams to define reporting requirements, check data quality, and build dashboards. My experience spans education, airport operations, and e-commerce, where I’ve used data to answer questions about enrolment, operational records, and sales performance.</p></div>
+  </section>
+  <section class="shell section" id="projects">
+    <p class="eyebrow">Projects</p><h2>Selected <em>case studies.</em></h2>
+    <div class="project-grid">
+      {projects.map(({ id, data }) => (
+        <article class:list={['project-card', { featured: data.featured }]}>
+          <a class="card-link" href={base + 'projects/' + id + '/'} aria-label={'View case study: ' + data.title}>
+            <ProjectVisual project={data} />
+            <div class="card-body">
+              <div class="tags">{data.tags.map(tag => <span>{tag}</span>)}</div>
+              <h3>{data.title}</h3><p>{data.summary}</p>
+              {data.metrics.length > 0 && <dl class="metrics">{data.metrics.map(metric => <div><dt>{metric.label}</dt><dd>{metric.value}</dd></div>)}</dl>}
+              <span class="read-link">View case study <span aria-hidden="true">↗</span></span>
+            </div>
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+  <section class="shell section" id="skills">
+    <p class="eyebrow">Skills</p><h2>What I <em>work with.</em></h2>
+    <div class="skill-grid">{skills.map(([title, ...items]) => <article class="panel"><h3>{title}</h3><ul>{items.map(item => <li>{item}</li>)}</ul></article>)}</div>
+  </section>
+  <section class="shell section" id="experience">
+    <p class="eyebrow">Experience</p><h2>Where I’ve <em>worked.</em></h2>
+    <div class="timeline">{experience.map(([date, role, company, detail]) => <article><p class="eyebrow">{date}</p><div><h3>{role}</h3><p class="company">{company}</p><p>{detail}</p></div></article>)}</div>
+  </section>
+  <section class="shell section" id="contact">
+    <div class="contact panel">
+  <div>
+    <p class="eyebrow">Contact</p>
+    <h2>Let’s <em>talk.</em></h2>
+    <p>For analytics roles, dashboard projects, or IT training enquiries.</p>
+  </div>
+  <div class="actions">
+    <a class="button primary" href="mailto:aleshba.riaz@gmail.com">Email Me <span aria-hidden="true">↗</span></a>
+    <a class="button" href="https://www.linkedin.com/in/aleshbaali/">LinkedIn</a>
+    <a class="button" href="https://github.com/aleshba20">GitHub</a>
+  </div>
+</div>
+</Site>

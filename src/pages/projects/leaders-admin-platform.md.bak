@@ -1,0 +1,22 @@
+---
+title: Leaders Training Centre Admin Platform
+summary: A role-based admin dashboard for managing website content and reducing manual publishing work.
+tags: [Business Analysis, REST APIs, UAT]
+order: 3
+image: images/leaders-admin-platform.webp
+imageAlt: Public homepage of Leaders Training Centre
+---
+
+## The brief
+
+The screenshot above shows the public website supported by the admin platform.
+
+The training centre needed a consistent way for authorised staff to create and update content across its website.
+
+## What I built
+
+I translated business requirements into a dashboard with role-based access and workflows for creating, reading, updating and deleting records. REST endpoints supported the admin interface across multiple operational modules.
+
+## How I validated it
+
+I traced the workflows back to the business requirements and ran more than 15 end-to-end user acceptance tests. My project records show that the new workflow cut content publishing time by half.

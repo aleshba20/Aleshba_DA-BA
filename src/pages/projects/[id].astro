@@ -1,0 +1,38 @@
+---
+import { getCollection, render } from 'astro:content';
+import Site from '../../layouts/Site.astro';
+import ProjectVisual from '../../components/ProjectVisual.astro';
+
+export async function getStaticPaths() {
+  return (await getCollection('projects')).map(project => ({
+    params: { id: project.id }, props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, summary, tags, metrics, live, source } = project.data;
+const projectsLink = import.meta.env.BASE_URL.replace(/\/?$/, '/') + '#projects';
+---
+<Site title={title + ' | Aleshba Riaz Ali'} description={summary}>
+  <div class="grid-backdrop">
+    <article class="shell case-study">
+      <a class="read-link" href={projectsLink}>← All projects</a>
+      <header class="case-header">
+        <p class="eyebrow">Case study</p><h1>{title}</h1>
+        <div class="tags">{tags.map(tag => <span>{tag}</span>)}</div>
+      </header>
+      <ProjectVisual project={project.data} />
+      {metrics.length > 0 && <dl class="metrics case-metrics">{metrics.map(metric => <div><dt>{metric.label}</dt><dd>{metric.value}</dd></div>)}</dl>}
+      <div class="case-body">
+        <p class="case-summary">{summary}</p>
+        <Content />
+        {(live || source) && <div class="actions">
+          {live && <a class="button primary" href={live}>Open live project ↗</a>}
+          {source && <a class="button" href={source}>View source ↗</a>}
+        </div>}
+        <a class="read-link" href={projectsLink}>← All projects</a>
+      </div>
+    </article>
+  </div>
+</Site>

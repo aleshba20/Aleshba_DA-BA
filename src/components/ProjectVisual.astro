@@ -1,0 +1,20 @@
+---
+const { project } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const { image, imageAlt, title, featured } = project;
+---
+{image ? (
+  <img class="project-image" src={base + image} alt={imageAlt || title} loading="lazy" />
+) : featured ? (
+  <div class="visual analytics-visual">
+    <div class="visual-top"><span>AAPL / PRICE SNAPSHOT</span><span>29 OCT</span></div>
+    <div class="snapshot">
+      <div><small>Close</small><strong>$348.00</strong></div>
+      <div><small>20-day average</small><strong>$341.00</strong></div>
+      <div><small>50-day average</small><strong>$332.37</strong></div>
+    </div>
+    <p>Figures shown for one trading day.</p>
+  </div>
+) : (
+  <div class="visual secondary-visual" aria-hidden="true"><span>{project.tags[0]}</span><strong>{title}</strong></div>
+)}

@@ -1,0 +1,24 @@
+---
+title: Leaders Education Centre Website
+summary: A responsive course website designed to help prospective students find training programmes and submit an enquiry.
+tags: [HTML, CSS, JavaScript, PHP, Technical SEO]
+order: 2
+live: https://leadersedu.qa/
+image: images/leaders-education-centre.webp
+---
+
+## The brief
+
+Leaders Education Centre needed a website where prospective students could browse professional and language courses and find the information required to make an enquiry.
+
+## My role
+
+I took the site from wireframes to deployment. I built responsive course pages and organised content around programme details, entry requirements and enquiry options.
+
+## Implementation
+
+I built the frontend with HTML, CSS and JavaScript and used PHP for enquiries. I also added structured data and applied technical SEO and performance improvements across the site.
+
+## Outcome
+
+My project records show a 35% increase in digital enquiries in the first 60 days following deployment. This was a before-and-after observation.

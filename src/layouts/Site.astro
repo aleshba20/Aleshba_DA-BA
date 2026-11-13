@@ -1,0 +1,60 @@
+---
+import '@fontsource-variable/geist';
+import '@fontsource/instrument-serif/400-italic.css';
+import '../styles/global.css';
+
+const { title, description } = Astro.props;
+const home = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const nav = [
+  ['Home', 'home'], ['About', 'about'], ['Projects', 'projects'],
+  ['Skills', 'skills'], ['Experience', 'experience'], ['Contact', 'contact'],
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0d0d10" />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL.replace(/\/?$/, '/')}favicon.svg`} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="header">
+      <div class="shell header-inner">
+        <a class="identity" href={home}><span>AR</span>Aleshba Riaz Ali</a>
+        <nav class="nav" id="navigation" aria-label="Main navigation">
+          {nav.map(([label, id]) => <a href={home + '#' + id}>{label}</a>)}
+        </nav>
+        <a class="button header-contact" href={home + '#contact'}>Let’s talk <span aria-hidden="true">↗</span></a>
+        <button class="menu" aria-controls="navigation" aria-expanded="false" hidden>Menu</button>
+      </div>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="shell footer"><span>© {new Date().getFullYear()} Aleshba Riaz Ali</span><span>Business Analytics · Business Intelligence · IT Training</span></footer>
+    <script>
+      const button = document.querySelector<HTMLButtonElement>('.menu');
+      const navigation = document.querySelector<HTMLElement>('.nav');
+      if (button && navigation) {
+        button.hidden = false;
+        navigation.classList.add('enhanced');
+        const setOpen = (open: boolean) => {
+          button.setAttribute('aria-expanded', String(open));
+          navigation.classList.toggle('open', open);
+        };
+        button.addEventListener('click', () => setOpen(button.getAttribute('aria-expanded') !== 'true'));
+        navigation.addEventListener('click', (event) => {
+          if (event.target instanceof Element && event.target.closest('a')) setOpen(false);
+        });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && button.getAttribute('aria-expanded') === 'true') {
+            setOpen(false);
+            button.focus();
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
