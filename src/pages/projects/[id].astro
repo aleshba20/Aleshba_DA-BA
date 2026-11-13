@@ -5,34 +5,213 @@ import ProjectVisual from '../../components/ProjectVisual.astro';
 
 export async function getStaticPaths() {
   return (await getCollection('projects')).map(project => ({
-    params: { id: project.id }, props: { project },
+    params: { id: project.id },
+    props: { project },
   }));
 }
 
 const { project } = Astro.props;
 const { Content } = await render(project);
 const { title, summary, tags, metrics, live, source } = project.data;
-const projectsLink = import.meta.env.BASE_URL.replace(/\/?$/, '/') + '#projects';
+const isApple = project.id === 'apple-financial-analytics';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const projectsLink = `${base}#projects`;
+
+const methodology = [
+  {
+    title: 'Prepare the data',
+    detail: 'I processed the daily records in Pandas and stored them in MySQL so prices and trading volume could be queried by date.',
+  },
+  {
+    title: 'Compare price and volume',
+    detail: 'I used 20- and 50-session moving averages to put the closing price in context and displayed trading volume over the same period.',
+  },
+  {
+    title: 'Test the forecast',
+    detail: 'I used an 80/20 train–test split and compared the Random Forest’s return forecast error with a naïve baseline.',
+  },
+];
 ---
+
 <Site title={title + ' | Aleshba Riaz Ali'} description={summary}>
   <div class="grid-backdrop">
-    <article class="shell case-study">
+    <article class:list={['shell', 'case-study', { 'apple-case': isApple }]}>
       <a class="read-link" href={projectsLink}>← All projects</a>
+
       <header class="case-header">
-        <p class="eyebrow">Case study</p><h1>{title}</h1>
+        <p class="eyebrow">Case study</p>
+        <h1>{title}</h1>
         <div class="tags">{tags.map(tag => <span>{tag}</span>)}</div>
       </header>
-      <ProjectVisual project={project.data} />
-      {metrics.length > 0 && <dl class="metrics case-metrics">{metrics.map(metric => <div><dt>{metric.label}</dt><dd>{metric.value}</dd></div>)}</dl>}
+
+      {isApple ? (
+        <section class="apple-overview" aria-labelledby="apple-finding">
+          <div>
+            <p class="eyebrow">29 October snapshot</p>
+            <h2 id="apple-finding">Apple closed 4.70% above its 50-day average</h2>
+            <p>{summary}</p>
+          </div>
+          <ProjectVisual project={project.data} />
+        </section>
+      ) : (
+        <ProjectVisual project={project.data} />
+      )}
+
+      {metrics.length > 0 && (
+        <div class:list={{ 'apple-section': isApple }}>
+          {isApple && <h2>Key metrics</h2>}
+          <dl class="metrics case-metrics">
+            {metrics.map(metric => (
+              <div>
+                <dt>{metric.label}</dt>
+                <dd class:list={{ 'metric-gap': isApple && metric.value.startsWith('+') }}>
+                  {metric.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      )}
+
+      {isApple && (
+        <section class="apple-section" aria-labelledby="apple-methodology">
+          <h2 id="apple-methodology">Methodology</h2>
+          <div class="apple-methods">
+            {methodology.map(({ title, detail }) => (
+              <div>
+                <h3>{title}</h3>
+                <p>{detail}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <div class="case-body">
-        <p class="case-summary">{summary}</p>
+        {!isApple && <p class="case-summary">{summary}</p>}
         <Content />
-        {(live || source) && <div class="actions">
-          {live && <a class="button primary" href={live}>Open live project ↗</a>}
-          {source && <a class="button" href={source}>View source ↗</a>}
-        </div>}
+        {(live || source) && (
+          <div class="actions">
+            {live && <a class="button primary" href={live}>Open live project ↗</a>}
+            {source && <a class="button" href={source}>View source ↗</a>}
+          </div>
+        )}
         <a class="read-link" href={projectsLink}>← All projects</a>
       </div>
     </article>
   </div>
 </Site>
+
+<style>
+  .apple-overview {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    align-items: center;
+    gap: clamp(20px, 4vw, 44px);
+    padding: clamp(20px, 4vw, 36px);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: linear-gradient(135deg, #2a1b23, var(--panel) 65%);
+  }
+
+  .apple-overview h2 {
+    margin: 8px 0 12px;
+    font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+    font-weight: 650;
+    line-height: 1.12;
+  }
+
+  .apple-overview p:not(.eyebrow),
+  .apple-methods p {
+    color: var(--muted);
+  }
+
+  .apple-overview :global(.project-image) {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+
+  .apple-section {
+    margin-top: clamp(32px, 5vw, 56px);
+  }
+
+  .apple-section h2 {
+    margin-bottom: 16px;
+    font-size: clamp(1.4rem, 2.6vw, 2rem);
+    font-weight: 650;
+  }
+
+  .apple-case .case-metrics,
+  .apple-methods {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .apple-case .case-metrics {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .apple-case .case-metrics > div,
+  .apple-methods > div {
+    padding: clamp(14px, 2.5vw, 24px);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--panel);
+  }
+
+  .apple-case .case-metrics dd {
+    font-size: clamp(1.35rem, 3vw, 2.1rem);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .apple-case .case-metrics dt {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+  }
+
+  .metric-gap {
+    color: #ff9aa3;
+  }
+
+  .apple-methods h3 {
+    margin-bottom: 6px;
+    font-size: 1.1rem;
+    font-weight: 650;
+  }
+
+  .apple-case .case-body {
+    max-width: 900px;
+  }
+
+  @media (max-width: 760px) {
+    .apple-overview,
+    .apple-methods {
+      grid-template-columns: 1fr;
+    }
+
+    .apple-case .case-metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .apple-case {
+  --apple-border: #c7364c;
+  --apple-text-accent: #ff7b8a;
+}
+
+.apple-case .case-metrics > div,
+.apple-case .apple-methods > div {
+  border-color: var(--apple-border);
+}
+
+.apple-case .apple-section h2,
+.apple-case .case-body :global(h2),
+.apple-case .case-metrics dt,
+.apple-case .apple-methods h3 {
+  color: var(--apple-text-accent);
+}
+  }
+</style>

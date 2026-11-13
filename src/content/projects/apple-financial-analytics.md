@@ -1,29 +1,39 @@
 ---
 title: Apple Financial Analytics
-summary: I built a dashboard to explore Apple’s stock price, moving averages, and trading volume, then tested whether a Random Forest could beat a simple forecasting baseline.
+summary: I built a dashboard to analyse Apple’s historical stock prices and trading volume, and tested whether a Random Forest forecast improved on a naïve baseline.
 tags: [Python, MySQL, FastAPI, React, scikit-learn]
 order: 1
 featured: true
 image: images/apple-financial-analytics.webp
+live: https://aleshba-equity-analytics.netlify.app
+imageAlt: Apple dashboard showing historical closing prices and the 20-day moving average
+
 metrics:
-  - { value: "1,464", label: Daily records }
-  - { value: "20 / 50", label: Moving-average windows }
-  - { value: "80 / 20", label: Train / test split }
+  - { value: "1,464", label: "Daily records analysed" }
+  - { value: "$348.00", label: "29 Oct closing price" }
+  - { value: "$341.00", label: "29 Oct · 20-day average" }
+  - { value: "$332.37", label: "29 Oct · 50-day average" }
+  - { value: "+2.05%", label: "29 Oct · close vs. 20-day average" }
+  - { value: "+4.70%", label: "29 Oct · close vs. 50-day average" }
 ---
 
 ## Project question
 
-How can a single dashboard help someone compare recent price movements with the longer trend, check whether trading activity was unusually high, and understand how well a forecasting model actually performed?
+How did Apple’s closing price compare with its recent and longer-term trends, and did a Random Forest forecast improve on a simple baseline?
 
 ## Data and methodology
 
-I processed 1,464 daily stock records using Python and Pandas, calculated daily returns and rolling indicators, and stored the processed data in MySQL. FastAPI exposes the data to a React dashboard built with Recharts. A date filter lets the reader compare the closing price, moving averages and trading volume across the same period.
+I processed 1,464 daily stock records in Python and Pandas, calculated daily returns and 20- and 50-trading-day moving averages, and stored the processed data in MySQL. FastAPI serves the data to a React dashboard built with Recharts. A date filter lets readers compare price trends and trading volume over the same period.
 
-## Reading the dashboard
+I used an 80/20 train–test split to evaluate the forecasting model and compared its return forecast error with a naïve baseline.
 
-In the 29 October snapshot, the closing price was **$348.00**, above both the **$341.00** 20-day moving average and the **$332.37** 50-day moving average. The shorter average was also above the longer one. That ordering shows that recent prices were higher than the longer-run average at that point.
+## Key finding
 
-Trading volume provides a separate view of activity. A daily volume value counts the shares traded during that session. Average volume summarises activity over a period. Comparing both helps identify whether a particular day was unusually active.
+On 29 October, Apple closed at **$348.00**. That was **$7.00 (+2.05%) above its 20-day moving average** and **$15.63 (+4.70%) above its 50-day moving average**. The 20-day average was also higher than the 50-day average, placing the session’s close above both trend benchmarks.
+
+## Trading volume
+
+The dashboard shows how many shares traded in each session. Comparing a session’s volume with its recent average would help establish whether a price move coincided with unusually high trading activity.
 
 ## Forecast evaluation
 
@@ -34,8 +44,8 @@ Trading volume provides a separate view of activity. A daily volume value counts
 | Random Forest return MAE, as reported  |   3.14 |
 | Naïve return baseline MAE, as reported |  3.142 |
 
-The return model and naïve baseline gave nearly identical errors at the reported precision. The return figures above preserve the reported values. Verify their scale and units in the original model outputs before interpreting them as percentages.
+The return errors were nearly identical at the reported precision, so the comparison showed no clear advantage for the Random Forest. The return error units still need to be confirmed against the original model outputs.
 
 ## What I’d improve next
 
-I’d use a walk-forward evaluation and report results separately for different market conditions. I’d also document the return units beside each error metric so the model and baseline can be compared directly.
+I’d add a 20-session average-volume benchmark and annotate a session with a notable price move. For forecasting, I’d use walk-forward evaluation to check whether the results hold across different periods.
