@@ -187,7 +187,7 @@ const methodology = [
     max-width: 900px;
   }
 
-  @media (max-width: 760px) {
+    @media (max-width: 760px) {
     .apple-overview,
     .apple-methods {
       grid-template-columns: 1fr;
@@ -196,22 +196,113 @@ const methodology = [
     .apple-case .case-metrics {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-
-    .apple-case {
-  --apple-border: #c7364c;
-  --apple-text-accent: #ff7b8a;
-}
-
-.apple-case .case-metrics > div,
-.apple-case .apple-methods > div {
-  border-color: var(--apple-border);
-}
-
-.apple-case .apple-section h2,
-.apple-case .case-body :global(h2),
-.apple-case .case-metrics dt,
-.apple-case .apple-methods h3 {
-  color: var(--apple-text-accent);
-}
   }
+
+  .apple-case .case-metrics > div,
+  .apple-case .apple-methods > div {
+    border-color: #c7364c;
+  }
+
+  .apple-case .apple-section h2,
+  .apple-case .case-body :global(h2),
+  .apple-case .case-metrics dt,
+  .apple-case .apple-methods h3 {
+    color: #ff7b8a;
+  }
+
+  @media (hover: hover) {
+    .apple-case .case-metrics > div:hover,
+    .apple-case .apple-methods > div:hover {
+      border-color: #ff6379;
+      box-shadow: 0 0 20px #ff354d55;
+    }
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .apple-case .case-metrics > div,
+    .apple-case .apple-methods > div {
+      transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+    }
+
+    .apple-case .case-metrics > div:hover,
+    .apple-case .apple-methods > div:hover {
+      transform: translateY(-4px);
+    }
+  }
+</style>
+
+<script>
+  const cards = document.querySelectorAll(
+    '.apple-case .case-metrics > div, .apple-case .apple-methods > div'
+  );
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (cards.length && !reduceMotion.matches && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+
+        observer.unobserve(entry.target);
+        entry.target.animate(
+          [
+            { opacity: 0.35, translate: '0 14px' },
+            { opacity: 1, translate: '0 0' },
+          ],
+          { duration: 450, easing: 'ease-out' }
+        );
+      }
+    }, { threshold: 0.2 });
+
+    cards.forEach((card) => observer.observe(card));
+  }
+  <style>
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .apple-case .case-metrics > div {
+      position: relative;
+      overflow: hidden;
+      transition: transform 280ms cubic-bezier(.2, .8, .2, 1),
+        border-color 200ms ease, box-shadow 280ms ease;
+    }
+
+    .apple-case .case-metrics > div::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(110deg, transparent 30%, #ff637930 50%, transparent 70%);
+      transform: translateX(-100%);
+    }
+
+    .apple-case .case-metrics > div:hover {
+      transform: translateY(-7px);
+      border-color: #ff6379;
+      box-shadow: 0 14px 32px #c7364c40;
+    }
+
+    .apple-case .case-metrics > div:hover::after {
+      animation: apple-metric-sweep 550ms ease-out both;
+    }
+
+    .apple-case .case-metrics dd {
+      transform-origin: left center;
+    }
+
+    .apple-case .case-metrics > div:hover dd {
+      color: #ff8b9b;
+      animation: apple-metric-bounce 460ms cubic-bezier(.2, .7, .25, 1) both;
+    }
+
+    @keyframes apple-metric-bounce {
+      0% { transform: translateY(0) scale(1); }
+      40% { transform: translateY(-5px) scale(1.16); }
+      70% { transform: translateY(1px) scale(1.04); }
+      100% { transform: translateY(0) scale(1.08); }
+    }
+
+    @keyframes apple-metric-sweep {
+      to { transform: translateX(100%); }
+    }
+  }
+</style>
+</script>
 </style>
